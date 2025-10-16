@@ -337,7 +337,7 @@
       }
     </div>
 
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;">
       <button id="save-btn"
         style="padding:12px;background:linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);color:white;border:none;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;box-shadow:0 4px 12px rgba(139, 92, 246, 0.3);">
         💾 Save
@@ -345,6 +345,10 @@
       <button id="export-btn" 
         style="padding:12px;background:rgba(34, 197, 94, 0.2);color:#86efac;border:1px solid rgba(34, 197, 94, 0.3);border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;">
         📤 Export
+      </button>
+      <button id="copy-prompt-btn" 
+        style="padding:12px;background:rgba(34, 178, 197, 0.2);color:#86efac;border:1px solid rgba(34, 178, 197, 0.2);border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;">
+        ©️ Copy
       </button>
       <button id="close-btn" 
         style="padding:12px;background:rgba(239, 68, 68, 0.2);color:#fca5a5;border:1px solid rgba(239, 68, 68, 0.3);border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.2s;">
@@ -504,6 +508,7 @@
     overlay.querySelector("#save-btn"),
     overlay.querySelector("#export-btn"),
     overlay.querySelector("#close-btn"),
+    overlay.querySelector("#copy-prompt-btn"),
   ].forEach((btn) => {
     btn.addEventListener("mouseenter", () => {
       btn.style.transform = "translateY(-2px)";
@@ -724,7 +729,55 @@
       }
     });
   });
+  overlay
+    .querySelector("#copy-prompt-btn")
+    .addEventListener("click", async () => {
+      try {
+        // Fetch the YAML file (adjust the path as needed)
+        const yamlUrl = chrome.runtime.getURL(".yaml"); // file.yaml is next to manifest.json
 
+        const response = await fetch(yamlUrl);
+        if (!response.ok) throw new Error("Failed to fetch YAML file");
+
+        const yamlText = await response.text();
+
+        // Copy to clipboard
+        await navigator.clipboard.writeText(yamlText);
+
+        // Create toast notification
+        const toast = document.createElement("div");
+        toast.innerHTML = `✅ YAML Copied to Clipboard!`;
+        toast.style.position = "fixed";
+        toast.style.bottom = "20px";
+        toast.style.right = "20px";
+        toast.style.background = "#4caf50";
+        toast.style.color = "#fff";
+        toast.style.padding = "12px 20px";
+        toast.style.borderRadius = "8px";
+        toast.style.boxShadow = "0 4px 12px rgba(0,0,0,0.2)";
+        toast.style.fontFamily = "Arial, sans-serif";
+        toast.style.fontWeight = "bold";
+        toast.style.zIndex = 9999;
+        toast.style.opacity = "0";
+        toast.style.transition = "opacity 0.3s ease";
+
+        document.body.appendChild(toast);
+
+        // Fade in
+        requestAnimationFrame(() => {
+          toast.style.opacity = "1";
+        });
+
+        // Remove after 2.5s
+        setTimeout(() => {
+          toast.style.opacity = "0";
+          toast.addEventListener("transitionend", () => toast.remove());
+        }, 2500);
+        // Optionally, show a small toast/alert in the UI
+      } catch (error) {
+        console.error("Error copying YAML:", error);
+      }
+    });
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") overlay.remove();
   });
