@@ -94,7 +94,8 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (filters.subject) match = match && sn.subject === filters.subject;
         if (filters.grade) match = match && sn.grade === filters.grade;
         if (filters.page) match = match && sn.page === Number(filters.page);
-        if (filters.exported) match = match && sn.exported === filters.exported;
+        if (filters.exported !== undefined && filters.exported !== null)
+          match = match && sn.exported === filters.exported;
         return match;
       });
 
