@@ -14,6 +14,12 @@
         "default": "Ctrl+Shift+Y"
       },
       "description": "Capture selected/copy text and open overlay"
+    },
+    "view-snippets": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+Q"
+      },
+      "description": "view snippets"
     }
   },
   "action": {

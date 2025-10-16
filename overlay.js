@@ -33,7 +33,7 @@
         145: "Unit-3",
         181: "Unit-4",
         255: "Unit-5",
-        197: "Unit-6",
+        297: "Unit-6",
         321: "Unit-7",
       },
     },
@@ -159,6 +159,7 @@
     fontFamily: "Inter, -apple-system, BlinkMacSystemFont, sans-serif",
     fontSize: "14px",
     overflowY: "auto",
+    overflowX: "hidden",
     color: "#f8fafc",
     backdropFilter: "blur(10px)",
   });
@@ -319,7 +320,7 @@
         ${isPDFViewer ? "📋 Click below and paste (Ctrl+V):" : "📝 Content"}
       </div>
       <textarea id="copied-text" 
-        style="width:100%;height:140px;padding:12px;background:rgba(0,0,0,0.3);border:1px solid rgba(139, 92, 246, 0.2);border-radius:10px;resize:vertical;color:#f8fafc;font-family:monospace;font-size:12px;line-height:1.5;"
+        style="width:100%;height:140px;background:rgba(0,0,0,0.3);border:1px solid rgba(139, 92, 246, 0.2);border-radius:10px;resize:vertical;color:#f8fafc;font-family:monospace;font-size:12px;line-height:1.5;"
         placeholder="${
           isPDFViewer
             ? "Click here and paste with Ctrl+V..."
@@ -353,6 +354,126 @@
   `;
 
   document.body.appendChild(overlay);
+  // --------- START draggable header & handlers (paste right here) ---------
+  (function makeOverlayDraggable() {
+    // create header
+    const header = document.createElement("div");
+    header.id = "clipboard-header";
+    Object.assign(header.style, {
+      height: "42px",
+      display: "flex",
+      alignItems: "center",
+      gap: "10px",
+      padding: "8px 12px",
+      cursor: "grab",
+      userSelect: "none",
+      borderTopLeftRadius: "16px",
+      borderTopRightRadius: "16px",
+      background:
+        "linear-gradient(90deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02))",
+      position: "relative",
+      zIndex: 1,
+    });
+    header.innerHTML = `
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <path d="M3 7h18M3 12h18M3 17h18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div style="font-weight:700;font-size:13px;line-height:1;">Clipboard</div>
+    <div style="flex:1"></div>
+    <div style="font-size:12px;opacity:.8">Drag</div>
+  `;
+
+    // insert header at top of overlay
+    overlay.insertBefore(header, overlay.firstChild);
+
+    // clamp helper
+    const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+
+    // pointer drag state
+    let dragging = false;
+    let startX = 0,
+      startY = 0;
+    let startLeft = 0,
+      startTop = 0;
+
+    header.addEventListener("pointerdown", (ev) => {
+      ev.preventDefault();
+      header.setPointerCapture(ev.pointerId);
+      dragging = true;
+      header.style.cursor = "grabbing";
+      startX = ev.clientX;
+      startY = ev.clientY;
+      startLeft = parseFloat(overlay.style.left) || 0;
+      startTop = parseFloat(overlay.style.top) || 0;
+      document.body.style.userSelect = "none";
+    });
+
+    document.addEventListener("pointermove", (ev) => {
+      if (!dragging) return;
+      const dx = ev.clientX - startX;
+      const dy = ev.clientY - startY;
+      let newLeft = startLeft + dx;
+      let newTop = startTop + dy;
+
+      // clamp: keep at least 8px margin from edges
+      const margin = 8;
+      newLeft = clamp(
+        newLeft,
+        margin,
+        window.innerWidth - overlay.offsetWidth - margin
+      );
+      newTop = clamp(
+        newTop,
+        margin,
+        window.innerHeight - overlay.offsetHeight - margin
+      );
+
+      overlay.style.left = `${Math.round(newLeft)}px`;
+      overlay.style.top = `${Math.round(newTop)}px`;
+    });
+
+    function endDrag(ev) {
+      if (!dragging) return;
+      dragging = false;
+      header.style.cursor = "grab";
+      try {
+        header.releasePointerCapture(ev.pointerId);
+      } catch (e) {}
+      document.body.style.userSelect = "";
+      // save position to chrome.storage.local (optional; will fail silently if API not available)
+      try {
+        chrome?.storage?.local?.set?.(
+          {
+            clipboardOverlayPos: {
+              left: parseFloat(overlay.style.left),
+              top: parseFloat(overlay.style.top),
+            },
+          },
+          () => {}
+        );
+      } catch (e) {}
+    }
+
+    document.addEventListener("pointerup", endDrag);
+    document.addEventListener("pointercancel", endDrag);
+
+    // On creation, try to restore saved position
+    try {
+      chrome?.storage?.local?.get?.("clipboardOverlayPos", (res) => {
+        const pos = res?.clipboardOverlayPos;
+        if (
+          pos &&
+          typeof pos.left === "number" &&
+          typeof pos.top === "number"
+        ) {
+          overlay.style.transform = "none";
+          overlay.style.left = `${pos.left}px`;
+          overlay.style.top = `${pos.top}px`;
+        }
+      });
+    } catch (e) {}
+  })();
+  // --------- END draggable header & handlers ---------
 
   function escapeHtml(s) {
     if (!s) return "";
@@ -613,7 +734,6 @@
     const subject = overlay.querySelector("#subject-suggest").value;
     const saveBtn = overlay.querySelector("#save-btn");
     const unitVal = overlay.querySelector("#unit-suggest").value;
-    console.log(unitVal);
     const isEnabled = isPDFViewer
       ? pageVal && subject && unitVal
       : subject && unitVal;
