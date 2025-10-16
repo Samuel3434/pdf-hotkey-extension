@@ -103,7 +103,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       let currentPage = msg.page || 1;
       const totalItems = snippets.length;
       const totalFilteredItems = filteredSnippets.length;
-      const totalPages = Math.ceil(totalItems / pageSize);
+      const totalPages = Math.ceil(totalFilteredItems / pageSize);
 
       const slicedSnippets = filteredSnippets.slice(
         (currentPage - 1) * pageSize,
