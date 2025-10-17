@@ -87,7 +87,7 @@
           "required_fields":
             {
               "input_id": "string (copy input.id)",
-              "questionText": "string (20-160 chars, grammatically complete question)",
+              "questionText": "string (30-300 chars, grammatically complete question)",
               "type": "string (exactly: mcq, fill, short, tf, match)",
               "answer": "type-specific (see TYPE_SPECIFIC_RULES)",
               "choices": "type-specific (see TYPE_SPECIFIC_RULES)",
@@ -179,7 +179,7 @@
     {
       "non_negotiable_rules":
         [
-          "questionText: 20-160 characters (expand if too short without invention)",
+          "questionText: 30-300 characters (expand if too short without invention)",
           "explanation: 60-600 characters AND must follow EXPLANATION_FORMAT structure",
           "confidence: 0.0-1.0 based on snippet evidence quality",
           "tags: null or array of 0-5 lowercase, space-free tags (hyphens allowed)",
