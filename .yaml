@@ -44,9 +44,15 @@
 
           "type_handling":
             {
-              "request_handling": "If questionTypeRequest is valid, use it for first question",
-              "fallback": "If request invalid/absent, default to 'mcq' for determinism",
               "type_distribution": "Prefer varied types deterministically: order preference = [questionTypeRequest (if valid), mcq, short, tf, fill, match]. Use this ordering to select types when multiple are needed.",
+              "request_handling":
+                "If questionTypeRequest is valid (mcq, fill, short, tf, match), use it for the first question. If 'auto', select first type deterministically based on snippet content with fallback within category:
+                - Numeric/quantitative data: prefer mcq → fill if short phrase extraction is better.
+                - Conceptual/textual data: prefer short → mcq if snippet allows clear distractors → tf if simple true/false statement exists.
+                - Lists/tables/relations: prefer match → short/mcq if relationships are trivial.
+                All fallbacks are deterministic and based solely on snippet content.",
+              "fallback": "If request invalid/absent or snippet content does not allow 'auto' selection, default to mcq for determinism",
+              determinism_note: "Always maintain consistent type selection for identical inputs (temperature=0)",
             },
 
           "content_constraints":
