@@ -26,7 +26,7 @@
             },
           "selection_constraints":
             [
-              "Extract ALL distinct facts up to the maximum limit of 6; do not skip facts unless they are redundant or non-factual",
+              "Extract ALL distinct facts up to the maximum limit of 6; do not skip facts unless they are redundant or non-factual.don't over extract or under extract ",
               "For snippets with multiple concepts, list items, or numerical data, extract each as a separate fact.",
               "If a snippet contains a list (e.g., types of a concept), extract each list item as a distinct fact.",
               "Prioritize test-worthy facts but ensure at least 2 facts are extracted for snippets with sufficient content.",
@@ -252,7 +252,7 @@
     [
       "Output is exactly one JSON array (no outer object or text)",
       "Each object has only allowed fields (no extras)",
-      "For snippets with multiple facts, ensure multiple questions are generated (unless at max limit)",
+      "For snippets with multiple facts, ensure multiple questions are generated (unless at max limit).make sure to not under extract or over extract",
       "At least one 'hard' question is included if multiple questions and content allows",
       "All questions derive solely from snippet content",
       "All explanations follow mandatory format",
