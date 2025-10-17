@@ -54,6 +54,7 @@
               "numeric_data": "When snippet contains numeric data AND calculation/reasoning questions are FEASIBLE without invention, include ≥1 such question",
               "difficulty_distribution": "If generating multiple questions, include at least one 'hard' difficulty question when snippet content reasonably supports application/synthesis/analysis",
               "pre_existing_questions": "Adapt existing questions with minimal schema-compliant edits using ONLY snippet information",
+              "minimal_inference_rule": "Permit generation of higher-order 'hard' questions that combine two or more extracted facts logically (comparison, cause-effect, consequence, or simple multi-step reasoning), provided no new external facts/constants are introduced and all steps are traceable to the extracted facts.",
             },
 
           "strict_invention_rules":
@@ -141,7 +142,7 @@
               "Reflect common misunderstandings or related concepts from snippet",
               "No trivial variants of correct answer",
               "Use lexical ordering for deterministic choice sequence",
-              "Select distractors deterministically (lexical order) then apply a deterministic pseudo-shuffle to final choice order based on a stable hash of input_id so order is varied but repeatable"
+              "Select distractors deterministically (lexical order) then apply a deterministic pseudo-shuffle to final choice order based on a stable hash of input_id so order is varied but repeatable",
             ],
         },
       "fill":
@@ -169,7 +170,7 @@
               "All left-right pairs must have clear relationships from snippet",
               "Each item used exactly once",
               "No self-referential or circular mappings",
-              "Keep left array in lexical order; apply a deterministic pseudo-shuffle to the right array based on a stable hash of input_id so right-order varies but is repeatable"
+              "Keep left array in lexical order; apply a deterministic pseudo-shuffle to the right array based on a stable hash of input_id so right-order varies but is repeatable",
             ],
         },
     },
