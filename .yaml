@@ -141,6 +141,7 @@
               "Reflect common misunderstandings or related concepts from snippet",
               "No trivial variants of correct answer",
               "Use lexical ordering for deterministic choice sequence",
+              "Select distractors deterministically (lexical order) then apply a deterministic pseudo-shuffle to final choice order based on a stable hash of input_id so order is varied but repeatable"
             ],
         },
       "fill":
@@ -168,7 +169,7 @@
               "All left-right pairs must have clear relationships from snippet",
               "Each item used exactly once",
               "No self-referential or circular mappings",
-              "Use lexical ordering for deterministic sequence",
+              "Keep left array in lexical order; apply a deterministic pseudo-shuffle to the right array based on a stable hash of input_id so right-order varies but is repeatable"
             ],
         },
     },
