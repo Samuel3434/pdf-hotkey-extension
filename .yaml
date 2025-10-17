@@ -35,11 +35,11 @@
       "STEP_2_QUESTION_GENERATION":
         {
           "quantitative_rules":
-            {
-              "per_fact": "Generate 0-2 questions per extracted fact",
-              "minimum": "If ≥1 fact extracted, generate ≥1 question",
-              "maximum": "Maximum 6 questions total per input",
-              "empty_facts_case": "If facts=[], attempt exactly 1 question ONLY if it can be generated without any fact invention;otherwise return skip object with skip_reason: 'no factual content in snippet'.",
+            !IMPORTANT {
+              "per_fact": "MUST generate 0-2 questions for each extracted fact; do not skip facts. Each fact should contribute at least one question if feasible without invention.",
+              "minimum": "If ≥1 fact extracted, MUST generate ≥1 question; failure to do so is a violation",
+              "maximum": "No more than 6 questions per input; stop once reached",
+              "empty_facts_case": "If facts=[], generate exactly 1 question ONLY if feasible without invention; else return skip object with reason: 'no factual content in snippet'",
             },
 
           "type_handling":
@@ -62,7 +62,6 @@
               "pre_existing_questions": "Adapt existing questions with minimal schema-compliant edits using ONLY snippet information",
               "minimal_inference_rule": "Permit generation of higher-order 'hard' questions that combine two or more extracted facts logically (comparison, cause-effect, consequence, or simple multi-step reasoning), provided no new external facts/constants are introduced and all steps are traceable to the extracted facts.",
             },
-
           "strict_invention_rules":
             [
               "USE ONLY information explicitly present in raw_text",
@@ -70,7 +69,6 @@
               "If minimal assumption unavoidable: include concise 'assumption' field and keep assumption minimal",
               "If compliance requires invention: RETURN SKIP OBJECT instead",
             ],
-
           "validation_fallback": "If generated object violates schema: first attempt to rewrite/fix without invention. Only skip if compliance is impossible.",
         },
     },
