@@ -26,10 +26,10 @@
             },
           "selection_constraints":
             [
-              "Maximum 6 facts total",
-              "Prioritize most test-worthy facts when over limit",
-              "If no reliable factual content exists: return empty fact list []",
-              "Extract all distinct facts up to the maximum limit (6) to maximize question generation potential; avoid under-extraction.",
+              "Extract ALL distinct facts up to the maximum limit of 6; do not skip facts unless they are redundant or non-factual",
+              "For snippets with multiple concepts, list items, or numerical data, extract each as a separate fact.",
+              "If a snippet contains a list (e.g., types of a concept), extract each list item as a distinct fact.",
+              "Prioritize test-worthy facts but ensure at least 2 facts are extracted for snippets with sufficient content.",
             ],
         },
 
@@ -37,10 +37,10 @@
         {
           "quantitative_rules":
             !IMPORTANT {
-              "per_fact": "MUST generate 0-2 questions for each extracted fact; do not skip facts. Each fact should contribute at least one question if feasible without invention.",
-              "minimum": "If ≥1 fact extracted, MUST generate ≥1 question; failure to do so is a violation",
-              "maximum": "No more than 6 questions per input; stop once reached",
-              "empty_facts_case": "If facts=[], generate exactly 1 question ONLY if feasible without invention; else return skip object with reason: 'no factual content in snippet'",
+              "per_fact": "MUST generate exactly 1-2 questions for each extracted fact; never skip a fact without generating at least one question if feasible.",
+              "minimum": "If ≥1 fact extracted, MUST generate ≥1 question total; if multiple facts, generate multiple questions up to the limit.",
+              "maximum": "Stop at 6 questions per input; if more facts remain, prioritize based on test-worthiness.",
+              "empty_facts_case": "If facts=[], generate exactly 1 question ONLY if feasible without invention; else skip with reason: 'no factual content in snippet'",
             },
 
           "type_handling":
@@ -58,10 +58,10 @@
 
           "content_constraints":
             {
-              "numeric_data": "When snippet contains numeric data AND calculation/reasoning questions are FEASIBLE without invention, include ≥1 such question",
-              "difficulty_distribution": "If generating multiple questions, include at least one 'hard' difficulty question when snippet content reasonably supports application/synthesis/analysis",
               "pre_existing_questions": "Adapt existing questions with minimal schema-compliant edits using ONLY snippet information",
               "minimal_inference_rule": "Permit generation of higher-order 'hard' questions that combine two or more extracted facts logically (comparison, cause-effect, consequence, or simple multi-step reasoning), provided no new external facts/constants are introduced and all steps are traceable to the extracted facts.",
+              "numeric_data": "When snippet contains numeric data, include ≥1 'hard' question involving calculation or multi-step reasoning if feasible.",
+              "difficulty_distribution": "If generating multiple questions (≥2), MUST include at least one 'hard' difficulty question when snippet content supports application/synthesis/analysis (e.g., numerical problems, comparisons, cause-effect).",
             },
           "strict_invention_rules":
             [
@@ -252,6 +252,8 @@
     [
       "Output is exactly one JSON array (no outer object or text)",
       "Each object has only allowed fields (no extras)",
+      "For snippets with multiple facts, ensure multiple questions are generated (unless at max limit)",
+      "At least one 'hard' question is included if multiple questions and content allows",
       "All questions derive solely from snippet content",
       "All explanations follow mandatory format",
       "All schema constraints satisfied",
