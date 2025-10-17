@@ -29,6 +29,7 @@
               "Maximum 6 facts total",
               "Prioritize most test-worthy facts when over limit",
               "If no reliable factual content exists: return empty fact list []",
+              "Extract all distinct facts up to the maximum limit (6) to maximize question generation potential; avoid under-extraction.",
             ],
         },
 
