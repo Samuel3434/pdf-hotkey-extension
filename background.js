@@ -137,7 +137,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
     return true;
   }
 
-  function chunkArray(arr, size = 15) {
+  function chunkArray(arr, size = 10) {
     const chunks = [];
     for (let i = 0; i < arr.length; i += size) {
       chunks.push(arr.slice(i, i + size));
