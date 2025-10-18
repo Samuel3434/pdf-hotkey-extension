@@ -120,6 +120,7 @@
       "rule_1": "Begin with one-sentence factual summary of the answer",
       "rule_2": "Optional: Add 'Notes:' section with 1-4 concise bullets separated by ' • '",
       "rule_3": "Optional: Add 'Example:' prefix for short worked example if numeric/procedural content exists",
+      "rule_4": "Mandatory : Be thorough with the explanations",
       "character_limits": "Total explanation must be 60-600 characters",
       "content_constraints":
         [
@@ -139,8 +140,8 @@
     {
       "mcq":
         {
-          "choices": "EXACTLY 4 non-empty strings (<80 chars each)",
-          "answer": "integer 0-3 (index of correct choice)",
+          "choices": "AT LEAST 3 non-empty strings (<80 chars each). up to 'n' choices",
+          "answer": "integer 0-n (index of correct choice)",
           "distractor_rules":
             [
               "All distractors must be plausible and grounded in snippet content",
@@ -168,7 +169,7 @@
         },
       "match":
         {
-          "choices": "object {left: [3-5 strings], right: [3-5 strings]} (equal lengths 3-5)",
+          "choices": "object {left: [2-8 strings], right: [2-8 strings]} (equal lengths 2-8)",
           "answer": "array of {l: index, r: index} objects (0-based indices)",
           "validation_rules":
             [
@@ -188,8 +189,8 @@
           "explanation: 60-600 characters AND must follow EXPLANATION_FORMAT structure",
           "confidence: 0.0-1.0 based on snippet evidence quality",
           "tags: null or array of 0-5 lowercase, space-free tags (hyphens allowed)",
-          "mcq: exactly 4 choices, answer index 0-3",
-          "match: equal-length arrays (3-5 items), complete 1:1 mapping",
+          "mcq: at least 3 choices, answer index 0-n(number of choices)",
+          "match: equal-length arrays (2-8 items), complete 1:1 mapping",
           "NO extra fields beyond specified schema",
         ],
       "enforcement": "If any rule cannot be satisfied without invention, return skip object",

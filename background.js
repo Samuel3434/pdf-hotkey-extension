@@ -91,6 +91,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
 
       let filteredSnippets = snippets.filter((sn) => {
         let match = true;
+        if (filters.id) return sn.id === filters.id;
         if (filters.subject) match = match && sn.subject === filters.subject;
         if (filters.grade) match = match && sn.grade === filters.grade;
         if (filters.page) match = match && sn.page === Number(filters.page);

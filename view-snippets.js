@@ -14,6 +14,7 @@
       </div>
       
       <div class="filters">
+        <input type='text' id ="filter-id" placeholder='ID'/>
         <select id="filter-subject">
           <option value="">All Subjects</option>
           <option value="physics">Physics</option>
@@ -28,7 +29,7 @@
           <option value="ELEVEN">Grade 11</option>
           <option value="TWELVE">Grade 12</option>
         </select>
-        <input id="filter-page" type="number" style="width:0.7rem" min="1" />
+        <input id="filter-page" placeholder='Page'type="number" style="width:0.7rem" min="1" />
         <select id="filter-exported" >
           <option value="">All</option>
           <option value="true">Exported</option>
@@ -170,6 +171,13 @@
                     <option value="math">Math</option>
                     <option value="biology">Biology</option>
                     <option value="chemistry">Chemistry</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="edit-exported">Exported:</label>
+                  <select id="edit-exported" required>
+                    <option value=false>False</option>
+                    <option value=true>True</option>
                   </select>
                 </div>
               </div>
@@ -344,7 +352,6 @@
 
   function showSnippetDetail(snippet) {
     currentSnippet = snippet.id;
-
     // Hide list view and show detail view
     document.getElementById("list-view").style.display = "none";
     document.getElementById("detail-view").style.display = "flex";
@@ -396,6 +403,7 @@
     document.getElementById("edit-subject").value = snippet.subject || "";
     document.getElementById("edit-unit").value = snippet.unit || "";
     document.getElementById("edit-page").value = snippet.page || "";
+    document.getElementById("edit-exported").value = String(snippet.exported);
     document.getElementById("edit-question-type").value =
       snippet.questionTypeRequest || "";
     document.getElementById("edit-file-name").value = snippet.file_name || "";
@@ -429,6 +437,7 @@
 
   document.getElementById("apply-filters").onclick = () => {
     filters = {
+      id: document.getElementById("filter-id").value.trim(),
       subject: document.getElementById("filter-subject").value,
       grade: document.getElementById("filter-grade").value,
       page: document.getElementById("filter-page").value
@@ -441,6 +450,7 @@
   };
 
   document.getElementById("clear-filters").onclick = () => {
+    document.getElementById("filter-id").value = "";
     document.getElementById("filter-subject").value = "";
     document.getElementById("filter-grade").value = "";
     document.getElementById("filter-page").value = "";
@@ -498,6 +508,7 @@
       questionTypeRequest: document.getElementById("edit-question-type").value,
       file_name: document.getElementById("edit-file-name").value,
       raw_text: document.getElementById("edit-text").value,
+      exported: document.getElementById("edit-exported").value === "true",
     };
 
     chrome.runtime.sendMessage(
