@@ -104,7 +104,9 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
         if (subjectCompare !== 0) return subjectCompare;
         const gradeCompare = a.grade - b.grade;
         if (gradeCompare !== 0) return gradeCompare;
-        return a.page - b.page;
+        const pageCompare = a.page - b.page;
+        if (pageCompare !== 0) return pageCompare;
+        return a.timestamp - b.timestamp;
       });
       const pageSize = 10;
       let currentPage = msg.page || 1;
