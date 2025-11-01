@@ -99,7 +99,13 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
           match = match && sn.exported === filters.exported;
         return match;
       });
-
+      const sortedFIlteredSnippets = filteredSnippets.sort((a, b) => {
+        const subjectCompare = a.subject.localeCompare(b.subject);
+        if (subjectCompare !== 0) return subjectCompare;
+        const gradeCompare = a.grade - b.grade;
+        if (gradeCompare !== 0) return gradeCompare;
+        return a.page - b.page;
+      });
       const pageSize = 10;
       let currentPage = msg.page || 1;
       const totalItems = snippets.length;

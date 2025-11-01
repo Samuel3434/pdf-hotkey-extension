@@ -504,7 +504,7 @@
       grade: document.getElementById("edit-grade").value,
       subject: document.getElementById("edit-subject").value,
       unit: document.getElementById("edit-unit").value,
-      page: document.getElementById("edit-page").value,
+      page: Number(document.getElementById("edit-page").value),
       questionTypeRequest: document.getElementById("edit-question-type").value,
       file_name: document.getElementById("edit-file-name").value,
       raw_text: document.getElementById("edit-text").value,
